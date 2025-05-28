@@ -1,0 +1,151 @@
+---
+title: "Astrocyte (GFAP) Analysis"
+author: "Vatsal D. Jariwala"
+date: "2024-10-24"
+output: html_document
+---
+
+## Introduction
+
+This section visualizes GFAP-labeled astrocyte data across AAV-transfected samples. The analyses include:
+- Astrocyte % relative to DAPI
+- Total astrocyte counts
+- Colocalization with AAV expression (ROI)
+- Total DAPI counts for normalization context
+
+---
+
+## 1. Load Required Packages
+
+```{r message=FALSE}
+library(tidyverse)
+
+if (!requireNamespace("Seurat", quietly = TRUE)) {
+  install.packages("Seurat")
+}
+library(Seurat)
+```
+
+---
+
+## 2. Import GFAP Data
+
+```{r}
+df.GFAP <- na.omit(
+  readxl::read_excel(
+    "path to respective cell count file",
+    sheet = "df_GFAP_avg"
+  )
+)
+```
+
+---
+
+## 3. Astrocyte Percentage (% DAPI)
+
+```{r}
+summary_stats <- df.GFAP %>%
+  group_by(Timepoint, Transfection) %>%
+  summarise(
+    mean_percent = mean(Avg_strocyte_Percent_DAPI, na.rm = TRUE),
+    se_percent = sd(Avg_strocyte_Percent_DAPI, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+ggplot(summary_stats, aes(x = factor(Timepoint, levels = c("DIV5", "DIV8")),
+                          y = mean_percent,
+                          fill = Timepoint)) +
+  geom_bar(stat = "identity", position = position_dodge(0.9), color = "black") +
+  geom_errorbar(aes(ymin = mean_percent - se_percent, ymax = mean_percent + se_percent),
+                width = 0.2, position = position_dodge(0.9)) +
+  facet_grid(~ factor(Transfection, levels = c("Control_PBS", "CMV", "Hsyn")), scales = "free_y") +
+  labs(y = "Astrocyte Percentage (% DAPI)", x = "") +
+  ylim(0, 100) +
+  theme_bw() +
+  NoLegend()
+```
+
+---
+
+## 4. Absolute Astrocyte Count
+
+```{r}
+summary_stats <- df.GFAP %>%
+  group_by(Timepoint, Transfection) %>%
+  summarise(
+    mean_percent = mean(Avg_Astrocyte, na.rm = TRUE),
+    se_percent = sd(Avg_Astrocyte, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+ggplot(summary_stats, aes(x = factor(Timepoint, levels = c("DIV5", "DIV8")),
+                          y = mean_percent,
+                          fill = Timepoint)) +
+  geom_bar(stat = "identity", position = position_dodge(0.9), color = "black") +
+  geom_errorbar(aes(ymin = mean_percent - se_percent, ymax = mean_percent + se_percent),
+                width = 0.2, position = position_dodge(0.9)) +
+  facet_grid(~ factor(Transfection, levels = c("Control_PBS", "CMV", "Hsyn")), scales = "free_y") +
+  labs(y = "Astrocyte Count", x = "") +
+  ylim(0, 100) +
+  theme_bw() +
+  NoLegend()
+```
+
+---
+
+## 5. Astrocyte Colocalization with AAV (ROI)
+
+```{r}
+summary_stats <- df.GFAP %>%
+  group_by(Timepoint, Transfection) %>%
+  summarise(
+    mean_percent = mean(Avg_GFAP_AAV, na.rm = TRUE),
+    se_percent = sd(Avg_GFAP_AAV, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+ggplot(summary_stats, aes(x = factor(Timepoint, levels = c("DIV5", "DIV8")),
+                          y = mean_percent,
+                          fill = Timepoint)) +
+  geom_bar(stat = "identity", position = position_dodge(0.9), color = "black") +
+  geom_errorbar(aes(ymin = mean_percent - se_percent, ymax = mean_percent + se_percent),
+                width = 0.2, position = position_dodge(0.9)) +
+  facet_grid(~ factor(Transfection, levels = c("Control_PBS", "CMV", "Hsyn")), scales = "free_y") +
+  labs(y = "Astrocyte Colocalization (ROI)", x = "") +
+  ylim(0, 100) +
+  theme_bw() +
+  NoLegend()
+```
+
+---
+
+## 6. Total DAPI Counts
+
+```{r}
+summary_stats <- df.GFAP %>%
+  group_by(Timepoint, Transfection) %>%
+  summarise(
+    mean_percent = mean(Avg_DAPI, na.rm = TRUE),
+    se_percent = sd(Avg_DAPI, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+ggplot(summary_stats, aes(x = factor(Timepoint, levels = c("DIV5", "DIV8")),
+                          y = mean_percent,
+                          fill = Timepoint)) +
+  geom_bar(stat = "identity", position = position_dodge(0.9), color = "black") +
+  geom_errorbar(aes(ymin = mean_percent - se_percent, ymax = mean_percent + se_percent),
+                width = 0.2, position = position_dodge(0.9)) +
+  facet_grid(~ factor(Transfection, levels = c("Control_PBS", "CMV", "Hsyn")), scales = "free_y") +
+  labs(y = "DAPI Count", x = "") +
+  theme_bw() +
+  NoLegend()
+```
+
+---
+
+## Notes
+
+- File paths are local; ensure correct directory if moving between systems.
+- Output is consistent with the Gfap analysis for clear comparison.
+- This document is intended for collaborative visualization and version control on GitHub.

@@ -1,0 +1,117 @@
+---
+title: "LDH Assay Data Visualization"
+author: "Vatsal D. Jariwala"
+date: "2024-10-24"
+output: html_document
+---
+
+## Introduction
+
+This R Markdown document analyzes and visualizes LDH (Lactate Dehydrogenase) levels under different experimental conditions in an AAV project. It includes data import from Excel, package installation, and data visualization using `ggplot2`.
+
+---
+
+## 1. Package Installation and Loading
+
+```{r message=FALSE}
+# Create a list object to store package information
+packages <- list()
+
+# Specify all required packages
+packages$my_packages <- c("readr", "plyr", "readxl", "dplyr", 
+                          "factoextra", "tidyverse", "tidyr", 
+                          "ggplot2", "stringr")
+
+# Identify any packages that are not installed
+packages$not_installed <- packages$my_packages[!(packages$my_packages %in% installed.packages()[, "Package"])]
+
+# Install only missing packages
+if(length(packages$not_installed)) {
+  install.packages(packages$not_installed)
+}
+
+# Load all required packages
+lapply(packages$my_packages, require, character.only = TRUE)
+```
+
+---
+
+## 2. Data Import
+
+```{r}
+# Create a list to store data frames
+import <- list()
+
+# Load the LDH assay dataset from the specified Excel file
+import$df_LDH <- read_excel("/Users/vatsaljariwala/Documents/AAV_Project/LDH assay/Datasheet/LDH_data_all.xlsx", 
+                            sheet = "Sheet1")
+```
+
+---
+
+## 3. LDH Levels by Condition (All Patients)
+
+```{r}
+# Plot showing LDH levels over time for each condition
+ggplot(import$df_LDH, aes(x = (DIV), y = LDH_level, fill = Condition, color = Condition)) +
+  geom_point(aes(shape = factor(Patient))) +                      # Plot individual data points
+  geom_smooth(se = FALSE, method = "loess", linewidth = 0.5) +   # Add LOESS trend line
+  theme_classic() +
+  xlab("DIV") +
+  ylab("LDH Levels (U/ml)") +
+  labs(color = "Condition", fill = "Condition", shape = "Patient ID") +
+  scale_fill_manual(values = c("red", "#00AFBB", "green")) +
+  scale_color_manual(values = c("red", "#00AFBB", "green")) +
+  scale_x_discrete(limits = as.character(0:9)) +                 # Ensure consistent x-axis labels
+  theme(
+    plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 9, face = "bold"),
+    legend.title = element_text(size = 9, face = "bold"),
+    legend.key.size = unit(1, "lines"),
+    legend.position = "right",
+    strip.text = element_text(size = 10, face = "bold")
+  )
+```
+
+---
+
+## 4. LDH Levels by Patient and Condition (Faceted)
+
+```{r}
+# Same plot, now faceted by Patient
+ggplot(import$df_LDH, aes(x = (DIV), y = LDH_level, fill = Condition, color = Condition)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = "loess") +
+  theme_classic() +
+  xlab("DIV") +
+  ylab("LDH Levels (U/ml)") +
+  labs(color = "Condition", fill = "Condition", shape = "Patient ID") +
+  scale_fill_manual(values = c("red", "#00AFBB", "green")) +
+  scale_color_manual(values = c("red", "#00AFBB", "green")) +
+  facet_grid(~Patient) +                                          # Create a plot per patient
+  scale_x_discrete(limits = as.character(0:9)) +
+  theme(
+    plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(size = 10, face = "bold"),
+    axis.text.y = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 9, face = "bold"),
+    legend.title = element_text(size = 9, face = "bold"),
+    legend.key.size = unit(1, "lines"),
+    legend.position = "right",
+    strip.text = element_text(size = 10, face = "bold")
+  )
+```
+
+---
+
+## Notes
+
+- Ensure that the Excel file path is correctly specified on your system.
+- If the `DIV` variable is numeric and you want discrete behavior, convert it to character or factor using `as.character()` or `as.factor()`.
+- This analysis can be extended with statistical comparisons, violin plots, and outlier detection depending on further research needs.
