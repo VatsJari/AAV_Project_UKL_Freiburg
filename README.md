@@ -1,4 +1,4 @@
-# AAV_Project_UKL_Freiburg
+# AAV Project UKL-Freiburg
 
 🧠 No prior experience with R is necessary. If you follow this guide carefully, you’ll be able to run all plots successfully.
 🔧 Software Required
