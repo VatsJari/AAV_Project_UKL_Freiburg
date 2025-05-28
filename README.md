@@ -26,13 +26,13 @@ Before running anything, run the following lines in the Console to install neces
 install.packages("tidyverse")
 install.packages("readxl")
 install.packages("Seurat")
-✅ Step 3: Open the .Rmd Script
+✅ Step 3: Open the .Rmd Script (R-code folder)
 In RStudio, go to File → Open File and select either:
 GFAP_analysis.Rmd → for astrocyte data
 Olig_analysis.Rmd → for oligodendrocyte data
 This will open the file in the editor.
 
-✅ Step 4: Change the File Path
+✅ Step 4: Change the File Path (Datasheet folder)
 Each .Rmd script reads data from an Excel file. You need to update this path:
 
 readxl::read_excel("path to respective cell count file", sheet = "df_GFAP_avg")
