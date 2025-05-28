@@ -12,7 +12,6 @@ Download and install from: https://cran.r-project.org/
 Free and beginner-friendly.
 Install after R is installed.
 Download here: https://posit.co/download/rstudio-desktop/
-📁 Folder Structure (Recommended)
 
 
 
@@ -30,6 +29,8 @@ install.packages("Seurat")
 In RStudio, go to File → Open File and select either:
 GFAP_analysis.Rmd → for astrocyte data
 Olig_analysis.Rmd → for oligodendrocyte data
+Iba1_analysis.Rmd → for microglia data
+Neun_analysis.Rmd → for neuron data
 This will open the file in the editor.
 
 ✅ Step 4: Change the File Path (Datasheet folder)
@@ -56,15 +57,12 @@ Output a nicely formatted HTML report with your results.
 
 Each script produces several bar plots:
 
-For GFAP (Astrocytes):
+eg. -> GFAP (Astrocytes):
 % Astrocytes (relative to DAPI)
 Astrocyte count
 Astrocyte colocalization with AAV
 Total DAPI count
-For Olig (Oligodendrocytes):
-% Oligs (relative to DAPI)
-Olig count
-Olig colocalization with AAV
+
 
 Don’t edit raw data. Always use the same structure (column names must match those used in the script).
 Avoid spaces in file or folder names.
